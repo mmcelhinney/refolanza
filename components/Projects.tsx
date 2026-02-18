@@ -16,10 +16,8 @@ const TERRACE_REEL_SLIDES: ImageReelSlide[] = [
 const PROJECTS = [
   { title: "Villa Renovation", id: 1 },
   { title: "Commercial Fit-Out", id: 2 },
-  { title: "New Build Home", id: 3 },
-  { title: "Kitchen & Bathroom", id: 4, videoUrl: "https://www.facebook.com/reel/2079774746127030/" },
-  { title: "Extension & Terrace", id: 5, images: TERRACE_REEL_SLIDES },
-  { title: "Full Structural Refurb", id: 6 },
+  { title: "Kitchen & Bathroom", id: 3, videoUrl: "https://www.facebook.com/reel/2079774746127030/" },
+  { title: "Extension & Terrace", id: 4, images: TERRACE_REEL_SLIDES },
 ];
 
 const gradients = [
