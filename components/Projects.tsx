@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import VideoModal from "./VideoModal";
 import ImageReelModal, { type ImageReelSlide } from "./ImageReelModal";
 
@@ -29,9 +29,89 @@ const gradients = [
   "linear-gradient(135deg, #2c2c2c 0%, #1a1614 100%)",
 ];
 
+function ProjectCard({
+  project,
+  index,
+  onOpenVideo,
+  onOpenReel,
+}: {
+  project: (typeof PROJECTS)[number];
+  index: number;
+  onOpenVideo: (url: string, title: string) => void;
+  onOpenReel: (title: string, slides: ImageReelSlide[]) => void;
+}) {
+  const i = index;
+  if (project.videoUrl) {
+    return (
+      <button
+        type="button"
+        onClick={() => onOpenVideo(project.videoUrl!, project.title)}
+        aria-label={`${project.title} — watch video`}
+        className="group relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] flex flex-col items-end justify-end p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#4a4039] focus:ring-inset cursor-pointer"
+      >
+        <div
+          className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+          style={{ background: gradients[i % gradients.length] }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+          {project.title}
+        </span>
+        <span className="relative mt-1 flex items-center gap-1 text-sm text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Watch video
+        </span>
+      </button>
+    );
+  }
+  if (project.images) {
+    return (
+      <button
+        type="button"
+        onClick={() => onOpenReel(project.title, project.images)}
+        aria-label={`${project.title} — view before & after`}
+        className="group relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] flex flex-col items-end justify-end p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#4a4039] focus:ring-inset cursor-pointer"
+      >
+        <div
+          className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+          style={{ background: gradients[i % gradients.length] }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+          {project.title}
+        </span>
+        <span className="relative mt-1 flex items-center gap-1 text-sm text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6 6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Before & After
+        </span>
+      </button>
+    );
+  }
+  return (
+    <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] flex flex-col items-end justify-end p-6 text-left">
+      <div
+        className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+        style={{ background: gradients[i % gradients.length] }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+        {project.title}
+      </span>
+    </div>
+  );
+}
+
 export default function Projects() {
   const [modalVideo, setModalVideo] = useState<{ url: string; title: string } | null>(null);
   const [modalReel, setModalReel] = useState<{ title: string; slides: ImageReelSlide[] } | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const openVideo = (url: string, title: string) => setModalVideo({ url, title });
+  const openReel = (title: string, slides: ImageReelSlide[]) => setModalReel({ title, slides });
 
   return (
     <section
@@ -55,7 +135,58 @@ export default function Projects() {
           </p>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Mobile: compact buttons that expand to show project card */}
+        <div className="md:hidden space-y-2">
+          {PROJECTS.map((project) => (
+            <div key={project.id}>
+              <button
+                type="button"
+                onClick={() => setExpandedId(expandedId === project.id ? null : project.id)}
+                aria-expanded={expandedId === project.id}
+                aria-controls={`project-detail-${project.id}`}
+                id={`project-btn-${project.id}`}
+                className="flex w-full items-center justify-between rounded-xl border border-[#e8e0d5] bg-[#faf9f7] px-4 py-3 text-left text-[#2c2c2c] font-medium transition-colors hover:bg-[#e8e0d5]/50 focus:outline-none focus:ring-2 focus:ring-[#4a4039] focus:ring-offset-2"
+              >
+                <span>{project.title}</span>
+                <svg
+                  className={`h-5 w-5 shrink-0 text-[#3d3d3d] transition-transform ${expandedId === project.id ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <AnimatePresence>
+                {expandedId === project.id && (
+                  <motion.div
+                    id={`project-detail-${project.id}`}
+                    role="region"
+                    aria-labelledby={`project-btn-${project.id}`}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-4 pb-2">
+                      <ProjectCard
+                        project={project}
+                        index={PROJECTS.indexOf(project)}
+                        onOpenVideo={openVideo}
+                        onOpenReel={openReel}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: full grid of cards */}
+        <div className="hidden md:grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PROJECTS.map((project, i) => (
             <motion.div
               key={project.id}
@@ -65,62 +196,12 @@ export default function Projects() {
               transition={{ duration: 0.4, delay: i * 0.06 }}
               className="group relative aspect-[4/3] overflow-hidden rounded-[1.25rem]"
             >
-              {project.videoUrl ? (
-                <button
-                  type="button"
-                  onClick={() => setModalVideo({ url: project.videoUrl!, title: project.title })}
-                  aria-label={`${project.title} — watch video`}
-                  className="absolute inset-0 flex flex-col items-end justify-end p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#4a4039] focus:ring-inset rounded-[1.25rem] cursor-pointer w-full"
-                >
-                  <div
-                    className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                    style={{ background: gradients[i % gradients.length] }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    {project.title}
-                  </span>
-                  <span className="relative mt-1 flex items-center gap-1 text-sm text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                    Watch video
-                  </span>
-                </button>
-              ) : project.images ? (
-                <button
-                  type="button"
-                  onClick={() => setModalReel({ title: project.title, slides: project.images })}
-                  aria-label={`${project.title} — view before & after`}
-                  className="absolute inset-0 flex flex-col items-end justify-end p-6 text-left focus:outline-none focus:ring-2 focus:ring-[#4a4039] focus:ring-inset rounded-[1.25rem] cursor-pointer w-full"
-                >
-                  <div
-                    className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                    style={{ background: gradients[i % gradients.length] }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    {project.title}
-                  </span>
-                  <span className="relative mt-1 flex items-center gap-1 text-sm text-white/90 opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6 6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Before & After
-                  </span>
-                </button>
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-end justify-end p-6 text-left rounded-[1.25rem]">
-                  <div
-                    className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                    style={{ background: gradients[i % gradients.length] }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="relative text-lg font-semibold text-white opacity-0 transition-all duration-300 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    {project.title}
-                  </span>
-                </div>
-              )}
+              <ProjectCard
+                project={project}
+                index={i}
+                onOpenVideo={openVideo}
+                onOpenReel={openReel}
+              />
             </motion.div>
           ))}
         </div>
