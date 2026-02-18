@@ -22,7 +22,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-8 sm:flex-row sm:justify-between">
           <div className="text-center sm:text-left">
-            <p className="text-xl font-bold tracking-tight">ReforLanza</p>
+            <p className="text-xl font-bold tracking-tight">ReforLan</p>
             <p className="mt-1 text-white/80 text-sm">Lanzarote, Canary Islands</p>
           </div>
           <nav aria-label="Footer navigation">
@@ -43,7 +43,7 @@ export default function Footer() {
         </div>
         <div className="mt-10 pt-8 border-t border-white/10 text-center sm:text-left">
           <p className="text-sm text-white/60">
-            © {new Date().getFullYear()} ReforLanza. All rights reserved.
+            © {new Date().getFullYear()} ReforLan. All rights reserved.
           </p>
         </div>
       </div>

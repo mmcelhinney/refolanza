@@ -54,7 +54,7 @@ export default function Navbar() {
             isScrolled ? "text-[#2c2c2c]" : "text-white"
           }`}
         >
-          ReforLanza
+          ReforLan
         </a>
 
         {/* Desktop nav */}

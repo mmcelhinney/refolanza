@@ -67,7 +67,7 @@ export default function About() {
               transition={{ duration: 0.5 }}
               className="text-3xl font-bold text-[#2c2c2c] sm:text-4xl lg:text-5xl"
             >
-              About ReforLanza
+              About ReforLan
             </motion.h2>
             <motion.div
               initial={{ opacity: 0, y: 16 }}

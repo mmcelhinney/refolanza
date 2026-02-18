@@ -9,7 +9,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "ReforLanza | Building & Renovation Experts in Lanzarote",
+  title: "ReforLan | Building & Renovation Experts in Lanzarote",
   description:
     "20+ years delivering quality construction and renovations across Lanzarote. Full renovations, new builds, extensions, bathrooms, kitchens and structural work. Request a quote.",
   keywords: [
@@ -17,10 +17,10 @@ export const metadata: Metadata = {
     "renovation Lanzarote",
     "building Canary Islands",
     "reformas Lanzarote",
-    "ReforLanza",
+    "ReforLan",
   ],
   openGraph: {
-    title: "ReforLanza | Building & Renovation Experts in Lanzarote",
+    title: "ReforLan | Building & Renovation Experts in Lanzarote",
     description:
       "20+ years delivering quality craftsmanship across the island. Request a quote.",
     locale: "en_GB",
